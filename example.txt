@@ -1,0 +1,98 @@
+# import random
+
+# def fitness(board):
+#     return sum(board[i] == board[j] or abs(board[i] - board[j]) == j - i for i in range(len(board)) for j in range(i + 1, len(board)))
+
+# def generate_population(size, n):
+#     return [random.sample(range(n), n) for _ in range(size)]
+
+# def select(population, fitness_scores):
+#     return sorted(zip(population, fitness_scores), key=lambda x: x[1])[:2]
+
+# def crossover(p1, p2):
+#     point = random.randint(0, len(p1) - 1)
+#     return p1[:point] + p2[point:], p2[:point] + p1[point:]
+
+# def mutate(board, mutation_rate=0.1):
+#     if random.random() < mutation_rate:
+#         i, j = random.sample(range(len(board)), 2)
+#         board[i], board[j] = board[j], board[i]
+#     return board
+
+# def algo(generations, pop_size, n):
+#     population = generate_population(pop_size, n)
+#     for _ in range(generations):
+#         fitness_scores = [fitness(board) for board in population]
+#         if 0 in fitness_scores:
+#             return population[fitness_scores.index(0)]
+#         (p1, _), (p2, _) = select(population, fitness_scores)
+#         population = [mutate(child) for _ in range(pop_size // 2) for child in crossover(p1, p2)]
+#     return None
+
+# print(algo(generations=50, pop_size=1000, n=8))
+
+
+
+
+
+
+
+import random
+
+def fitness(board):
+    return sum(board[i] == board[j] or abs(board[i] - board[j]) == j - i for i in range(len(board)) for j in range(i + 1, len(board)))
+
+def algo(generations, pop_size, n, mutation_rate=0.1):
+    population = [random.sample(range(n), n) for _ in range(pop_size)]
+    for _ in range(generations):
+        fitness_scores = [fitness(board) for board in population]
+        if 0 in fitness_scores:
+            return population[fitness_scores.index(0)]
+        (p1, _), (p2, _) = sorted(zip(population, fitness_scores), key=lambda x: x[1])[:2]
+        population = [random.sample(range(n), n) if random.random() < mutation_rate else p1[:i] + p2[i:] for i in range(pop_size)]
+    return None
+
+
+solution = algo(generations=1000, pop_size=100, n=10)
+if solution: print(solution)
+else: print('No Solution found.')
+
+
+
+
+
+
+
+
+
+
+# map = {
+#     "Western Australia": ["Northern Territory", "South Australia"],
+#     "Northern Territory": ["Western Australia", "South Australia", "Queensland"],
+#     "South Australia": ["Western Australia", "Northern Territory", "Queensland", "New South Wales", "Victoria"],
+#     "Queensland": ["Northern Territory", "South Australia", "New South Wales"],
+#     "New South Wales": ["Queensland", "South Australia", "Victoria"],
+#     "Victoria": ["South Australia", "New South Wales", "Tasmania"],
+#     "Tasmania": ["Victoria"],
+# }
+
+
+# def map_coloring(graph, colors, assignment={}, city=None):
+#     if len(assignment) == len(graph):
+#         return assignment
+#     city = city or next(iter(graph))
+#     for color in colors:
+#         if all(assignment.get(neigh) != color for neigh in graph[city]):
+#             assignment[city] = color
+#             result = map_coloring(graph, colors, assignment, next((c for c in graph if c not in assignment), None))
+#             if result:
+#                 return result
+#             del assignment[city]
+#     return None
+
+
+# colors = ["Red", "Green", "Blue"]
+
+# solution = map_coloring(map, colors)
+# print(solution)
+
